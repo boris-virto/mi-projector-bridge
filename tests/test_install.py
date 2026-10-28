@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -51,6 +52,10 @@ class InstallTests(unittest.TestCase):
             self.assertIn("is_state('remote.test_projector', 'on')", scripts)
             self.assertNotIn('remote.projector', scripts)
             self.assertIn('remote.projector', (install.ROOT / 'home-assistant/scripts.yaml').read_text())
+            helper = json.loads((root / 'voice-helper.json').read_text())
+            self.assertEqual(helper['value_template'], "{{ is_state('remote.test_projector', 'on') }}")
+            self.assertEqual(helper['turn_on'][0]['target']['entity_id'], 'script.projector_turn_on')
+            self.assertEqual(helper['turn_off'][0]['target']['entity_id'], 'script.projector_turn_off')
             with self.assertRaises(FileExistsError):
                 render('remote.other', root)
             self.assertEqual((root / 'scripts.yaml').read_text(), scripts)

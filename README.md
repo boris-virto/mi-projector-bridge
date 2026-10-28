@@ -44,11 +44,11 @@ addresses or internal Home Assistant storage.
 | --- | --- |
 | `runtime/` | The three Python modules captured from the working host, byte for byte |
 | `deploy/` | Portable systemd unit, environment defaults, pinned MQTT Compose image |
-| `home-assistant/` | Generic equivalents of the working scripts and dashboard |
+| `home-assistant/` | Generic working scripts/dashboard and Assist power-switch configuration |
 | `tools/install.py` | Plan, stage, and fresh-install paths; preserves existing installations |
 | `tools/projectorctl.py` | Local status, bounded pairing, explicit code confirmation, HID commands |
 | `tools/fetch_gatt.py` | Fetch one original GATT dependency at a pinned commit and SHA-256 |
-| `tools/render_ha.py` | Render examples for your actual HA remote entity |
+| `tools/render_ha.py` | Render scripts, dashboard and voice-helper reference for your HA remote entity |
 | `docs/` | Installation, pairing, recovery and measured validation evidence |
 | `tests/` | Wake packet/cleanup, installer safety, HA rendering and local client checks |
 

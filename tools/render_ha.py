@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render HA examples for the selected Android TV Remote entity; never writes HA."""
+"""Render scripts, dashboard and voice helper for one remote entity; never writes HA."""
 import argparse
 from pathlib import Path
 import re
@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def render(entity, output):
     if not re.fullmatch(r'remote\.[a-z0-9_]+', entity):
         raise ValueError('Expected a remote.entity_id')
-    names = ('scripts.yaml', 'dashboard.yaml')
+    names = ('scripts.yaml', 'dashboard.yaml', 'voice-helper.json')
     if any((output / name).exists() for name in names):
         raise FileExistsError('Output already exists; refusing to overwrite')
     output.mkdir(parents=True, exist_ok=True)
@@ -25,4 +25,4 @@ if __name__ == '__main__':
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     render(args.entity, args.output)
-    print('Rendered scripts/dashboard. Merge them following docs/home-assistant.md.')
+    print('Rendered scripts/dashboard/voice helper. Follow docs/home-assistant.md.')

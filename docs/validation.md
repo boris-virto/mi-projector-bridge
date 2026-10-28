@@ -86,6 +86,24 @@ This constructs GATT objects on the session bus only. It does not register with
 BlueZ, open a pairing window, transmit radio packets, or switch the projector.
 
 Staging and tests do not prove a fresh OS/hardware rebuild end to end. No second
-physical host has been installed from this repository. The existing Mac mini
-deployment remains unchanged. After migration, perform the actual deep-standby
+physical host has been installed from this repository. Packaging did not redeploy
+the original bridge. An Assist helper was subsequently added through HA's normal
+config flow, without restarting HA or Bluetooth. After migration, perform the actual deep-standby
 cycle in `operations.md` to validate the new adapter and projector enrollment.
+
+## Assist follow-up — 28 October 2026
+
+The original failure's STT output contained only «проекта» / «проектор», without
+the action verb. Separately, the builtin sentence parser targeted the exposed
+media player rather than the custom wake/sleep scripts. A template power switch
+was added through HA's supported config flow and exposed to Assist; only the
+same-named projector media player was removed from Assist exposure.
+
+Afterward, the diagnostic parser matched both «Включи проектор» and «Выключи
+проектор» uniquely to `switch.projector_power`. Actual microphone runs captured
+both complete phrases, invoked the corresponding scripts, and changed real
+Android TV Remote feedback to off, then on. The user confirmed successful
+shutdown of the display. This follow-up used the connected/recent-sleep path;
+it was not a second deep-standby hardware test. Instructions and the generic
+helper configuration are included in `docs/home-assistant.md` and
+`home-assistant/voice-helper.json`.

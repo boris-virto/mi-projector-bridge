@@ -83,17 +83,66 @@ An unavailable result is loss of feedback, not independent physical proof of
 sleep. Inspect the image during the first test. Full shutdown remains a separate
 optional script; final beacon wake after that mode was not revalidated.
 
-## 4. Dashboard and voice controls
+## 4. Dashboard
 
 Create a new dashboard, open its raw configuration editor, and paste the rendered
 `dashboard.yaml`. It has two buttons for the normal on/off scripts. Avoid
 overwriting any existing dashboard. You may translate the button/script aliases
 without changing their IDs.
 
-If you want voice control, explicitly expose the two normal scripts in HA's
-voice-assistant exposure settings and give them distinct, understandable names.
-The optional full-shutdown script should remain separate. This repository does
-not alter any existing voice services or their containers.
+## 5. Built-in Assist: natural power commands
+
+For phrases such as **«Включи проектор»** / **«Выключи проектор»**, expose a single
+template **switch** called **Проектор** that calls the tested on/off scripts.
+Exposing a media player with the same name sends these phrases to its normal
+network power path, which does not use this bridge. Merely exposing scripts named
+«Включить проектор» / «Выключить проектор» does not turn them into a single device
+with natural on/off behavior.
+
+Create the helper without restarting HA:
+
+1. Settings → Devices & services → Helpers → Create helper → Template → Switch.
+2. Name: `Проектор` (use a name in your Assist language).
+3. State template: `{{ is_state('remote.projector', 'on') }}`, using your actual
+   Android TV Remote entity.
+4. Turn-on action: `script.turn_on`, target `script.projector_turn_on`.
+5. Turn-off action: `script.turn_on`, target `script.projector_turn_off`.
+6. Save it and, if desired, rename its entity ID to `switch.projector_power`.
+7. In Settings → Voice assistants → Expose, expose this switch to **Assist**.
+   Remove the projector's same-named media player from Assist exposure to avoid
+   power-command ambiguity. This only changes voice exposure, not the media
+   player's normal controls. Keep diagnostic buttons, the raw remote and optional
+   full-shutdown script unexposed.
+8. Add aliases such as `проектор`, `кинопроектор`, `проектор в спальне`. Use
+   equivalent names/aliases and the correct pipeline language for other languages.
+
+The rendered `voice-helper.json` contains the helper's configuration fields for
+reference/API provisioning. It is not a `configuration.yaml` include: the helper
+is created through the UI/config flow. Its `remote.projector` reference is
+substituted by `tools/render_ha.py` just like the scripts and dashboard.
+
+Both actions use the non-blocking `script.turn_on` service, including when
+starting the **off** script. This launches the selected script; it does not turn
+the projector on by itself. Assist can acknowledge the request promptly while
+the script waits for real power feedback in the background. A voice
+acknowledgment means the action was accepted; deep wake can still take up to
+90 seconds. The switch's state follows actual network feedback, not the request.
+An unavailable remote is displayed as off by this simple template; do not treat
+that as independently confirmed sleep.
+
+Before executing commands, use Settings → Tools → Assist's sentence parser to
+check the target. Both phrases should match **only** `switch.projector_power`.
+This diagnostic parser does not switch the device. Then test with the actual
+microphone. Activate Assist, wait for its ready indication, and speak the entire
+command. If you get “not recognized,” inspect the pipeline's STT text first:
+in the original failed attempts it contained only «проекта» / «проектор», without
+the verb. That observation establishes missing command text, not the precise
+cause (speech timing, audio gating or transcription still need a fresh test).
+
+References: [Assist aliases](https://www.home-assistant.io/voice_control/aliases/),
+[Assist troubleshooting and sentence parser](https://www.home-assistant.io/voice_control/troubleshooting/).
+No voice container, shared Bluetooth service or HA restart is required for this
+helper/exposure change.
 
 ## API testing (optional)
 

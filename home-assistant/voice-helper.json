@@ -1,0 +1,16 @@
+{
+  "name": "Проектор",
+  "value_template": "{{ is_state('remote.projector', 'on') }}",
+  "turn_on": [
+    {
+      "action": "script.turn_on",
+      "target": {"entity_id": "script.projector_turn_on"}
+    }
+  ],
+  "turn_off": [
+    {
+      "action": "script.turn_on",
+      "target": {"entity_id": "script.projector_turn_off"}
+    }
+  ]
+}

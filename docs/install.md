@@ -34,7 +34,7 @@ new adapter is powered and available. Do not reset an adapter used by other apps
 Clone the private repository with an account/key that can read it:
 
 ```sh
-git clone git@github.com:boris-virto/projector-bridge.git
+git clone git@github.com:boris-virto/mi-projector-bridge.git projector-bridge
 cd projector-bridge
 python3 tools/fetch_gatt.py
 ```

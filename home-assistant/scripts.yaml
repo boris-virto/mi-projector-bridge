@@ -1,0 +1,78 @@
+# Replace remote.projector using tools/render_ha.py.
+# Merge these top-level entries into scripts.yaml; do not replace unrelated scripts.
+projector_turn_on:
+  alias: Turn on projector
+  description: HID wake while connected, otherwise a bounded Xiaomi wake signal; wait for actual power state.
+  icon: mdi:projector
+  mode: single
+  sequence:
+    - if:
+        - condition: state
+          entity_id: remote.projector
+          state: 'on'
+      then:
+        - stop: Projector is already on.
+    - action: mqtt.publish
+      data:
+        topic: projector_ble/command
+        payload: wake
+        retain: false
+    - wait_template: "{{ is_state('remote.projector', 'on') }}"
+      timeout: '00:01:30'
+      continue_on_timeout: false
+
+projector_turn_off:
+  alias: Turn off projector
+  description: Sleep with the display off; preserves the tested wake path.
+  icon: mdi:projector-off
+  mode: single
+  sequence:
+    - if:
+        - condition: template
+          value_template: "{{ states('remote.projector') in ['unknown', 'unavailable'] }}"
+      then:
+        - stop: Projector is unavailable; power state cannot be confirmed.
+          error: true
+    - if:
+        - condition: state
+          entity_id: remote.projector
+          state: 'on'
+      then:
+        - action: mqtt.publish
+          data:
+            topic: projector_ble/command
+            payload: sleep
+            retain: false
+        - wait_template: "{{ states('remote.projector') in ['off', 'unavailable'] }}"
+          timeout: '00:00:30'
+          continue_on_timeout: false
+
+# Optional: wake after this shutdown mode was not revalidated with the final sender.
+projector_full_shutdown:
+  alias: Fully shut down projector
+  description: Two power actions confirm shutdown; use the sleep script for normal operation.
+  icon: mdi:projector-off
+  mode: single
+  sequence:
+    - if:
+        - condition: state
+          entity_id: remote.projector
+          state: 'on'
+      then:
+        - action: remote.turn_off
+          target:
+            entity_id: remote.projector
+        - delay:
+            milliseconds: 750
+        - if:
+            - condition: state
+              entity_id: remote.projector
+              state: 'on'
+          then:
+            - action: remote.turn_off
+              target:
+                entity_id: remote.projector
+              continue_on_error: true
+        - wait_template: "{{ states('remote.projector') in ['off', 'unavailable'] }}"
+          timeout: '00:00:30'
+          continue_on_timeout: false

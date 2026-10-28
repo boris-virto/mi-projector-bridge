@@ -1,0 +1,17 @@
+name: Repository checks
+on:
+  push:
+  pull_request:
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch pinned GATT dependency
+        run: python3 tools/fetch_gatt.py
+      - name: Offline unit tests
+        run: PYTHONPATH=runtime:tools python3 -m unittest discover -s tests -v
+      - name: Validate MQTT Compose structure
+        run: docker compose -f deploy/mqtt/compose.yaml config --quiet
+      - name: Stage fresh installation without activating services
+        run: python3 tools/install.py --stage "$RUNNER_TEMP/projector-bridge-stage"

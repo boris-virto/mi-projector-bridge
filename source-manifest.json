@@ -1,0 +1,28 @@
+{
+  "captured_on": "2026-10-28",
+  "description": "Read-only capture of the working Ubuntu projector bridge; hardware identities and secrets excluded.",
+  "source_sha256": {
+    "runtime/classic_remote.py": "17c3f41055e1f60c429209b8db584aa6b8fb7c250e9cda0e5312306281c1f9a8",
+    "runtime/projector_bridge.py": "65cd7beaa17963066b7dcd25024c920a25fa4f2a8084baaa220c4ba5b8b82103",
+    "runtime/projector_wake.py": "548641ecfaa6e362773e8ea03e01a64928faec7780e55cf5d6703fa3a68a9872"
+  },
+  "tested_environment": {
+    "projector": "MiProjM05",
+    "android": "9",
+    "ubuntu": "24.04.5 LTS",
+    "kernel": "7.0.0-38-generic",
+    "bluez": "5.72-0ubuntu5.8",
+    "python": "3.12.3",
+    "paho-mqtt": "2.1.0",
+    "home_assistant": "2026.10.4",
+    "docker_engine": "29.9.2",
+    "docker_compose": "5.6.1"
+  },
+  "gatt_dependency": {
+    "repository": "https://github.com/artyomsoft/ble-hid-keyboard",
+    "commit": "59e1504668643ef0c5dadbbb35550ee9fe22409a",
+    "path": "core/ble_dbus.py",
+    "sha256": "05b75c8bc2f8392e01d648d6e2c3a1b6e12e12412e576a9cba211630d50ce37d"
+  },
+  "fresh_host_end_to_end_tested": false
+}

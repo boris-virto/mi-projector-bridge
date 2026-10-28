@@ -1,0 +1,2 @@
+# dbus and gi come from Ubuntu packages through --system-site-packages.
+paho-mqtt==2.1.0

@@ -1,0 +1,24 @@
+[Unit]
+Description=Projector HID remote and local MQTT bridge
+After=bluetooth.service docker.service
+Requires=bluetooth.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/projector-bridge
+EnvironmentFile=/etc/projector-bridge/bridge.env
+ExecStart=/opt/projector-bridge/.venv/bin/python -B -u /opt/projector-bridge/projector_bridge.py
+Restart=on-failure
+RestartSec=5
+RuntimeDirectory=projector-ble
+RuntimeDirectoryMode=0700
+StateDirectory=projector-ble
+StateDirectoryMode=0700
+UMask=0077
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,31 @@
+title: Projector
+views:
+  - title: Projector
+    path: main
+    type: masonry
+    cards:
+      - type: markdown
+        content: 'Turn off puts the projector to sleep with its display off.'
+      - type: horizontal-stack
+        cards:
+          - type: button
+            name: Turn on
+            icon: mdi:projector
+            tap_action:
+              action: perform-action
+              perform_action: script.projector_turn_on
+            hold_action:
+              action: none
+          - type: button
+            name: Turn off
+            icon: mdi:projector-off
+            tap_action:
+              action: perform-action
+              perform_action: script.projector_turn_off
+            hold_action:
+              action: none
+      - type: markdown
+        content: >-
+          **State:** {% if is_state('remote.projector', 'on') %}on
+          {% elif is_state('remote.projector', 'off') %}sleeping
+          {% else %}unavailable{% endif %}

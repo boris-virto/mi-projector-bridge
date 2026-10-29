@@ -17,8 +17,8 @@ invented or implied here.
 Runtime dependencies are Ubuntu's `python3-dbus` / `python3-gi`, and
 `paho-mqtt==2.1.0` from PyPI. The MQTT container is Eclipse Mosquitto 2.1.2, pinned
 to the digest inspected on the working host. Each dependency retains its own
-license. This repository is maintained as a private infrastructure recovery
-repository; it does not claim a blanket open-source license for all components.
+license. This repository publishes infrastructure recovery code and instructions; it does
+not claim a blanket open-source license for upstream components.
 
 The wake sender is also contributed as a standalone tool in
 [MiPower PR #2](https://github.com/DenizOner/MiPower/pull/2). This bridge does not

@@ -36,7 +36,7 @@ Full HA REST API cycle on the working deployment:
 | Earlier successful deep-wake trial | LAN returned after 46 s; user confirmed image without pressing native remote |
 
 The pair key file did not change during the successful final wake tests/cycle.
-Existing HA and the five other containers retained their IDs/start times; the
+Existing services retained their container IDs/start times; the
 shared Bluetooth daemon was not restarted. Temporary ADB access was disabled
 after diagnostics, with TCP 5555 closed and normal Android TV Remote still
 available. No earlier raw diagnostic experiments or key-recovery code are shipped
@@ -48,8 +48,10 @@ after the optional full-shutdown script was not revalidated with the final sende
 
 ## Source capture
 
-`runtime/` contains the exact three working source files exported read-only from
-the Mac mini. `source-manifest.json` records their SHA-256 values. The portable
+`runtime/` derives from three working source files exported read-only from the
+Mac mini. The public edition uses generic device identifiers, redacts pairing
+status from MQTT, and validates command payloads before decoding.
+`source-manifest.json` records both original capture hashes and current hashes. The portable
 systemd unit changes only deployment paths and moves the three environment
 settings into one file. HA examples translate aliases and replace the specific
 remote entity with a placeholder; control behavior follows the captured scripts.

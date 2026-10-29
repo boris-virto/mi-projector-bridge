@@ -8,7 +8,6 @@ from pathlib import Path
 import signal
 import socket
 import socketserver
-import subprocess
 import struct
 import sys
 import threading
@@ -18,6 +17,7 @@ import dbus
 import dbus.mainloop.glib
 import dbus.service
 from gi.repository import GLib
+from mqtt_policy import parse_command, public_status
 from core.ble_dbus import (
     Application, Service, Characteristic, Descriptor, DBUS_PROP_IFACE,
     GATT_CHRC_IFACE, GATT_DESC_IFACE, NotSupportedException,
@@ -152,7 +152,7 @@ class PairingAgent(dbus.service.Object):
             return
         self.bridge.pending = {'device': str(device), 'kind': kind, 'code': code,
                                'ok': ok, 'error': error, 'expires': time.monotonic()+90}
-        logging.info('PAIRING REQUEST device=%s kind=%s code=%s', device, kind, code)
+        logging.info('Pairing request pending; inspect the root-only control socket')
 
     @dbus.service.method(AGENT, in_signature='ou', out_signature='', async_callbacks=('ok','error'))
     def RequestConfirmation(self, device, passkey, ok, error):
@@ -168,7 +168,7 @@ class PairingAgent(dbus.service.Object):
 
     @dbus.service.method(AGENT, in_signature='ouq', out_signature='')
     def DisplayPasskey(self, device, passkey, entered):
-        logging.info('PAIRING DISPLAY device=%s code=%06d entered=%s', device, passkey, entered)
+        logging.info('Pairing passkey display requested; sensitive values omitted from logs')
 
     @dbus.service.method(AGENT, in_signature='os', out_signature='')
     def AuthorizeService(self, device, uuid):
@@ -439,7 +439,7 @@ class Bridge:
             self.pending['error'](Rejected('Pairing confirmation timed out'))
             self.pending=None
         if self.mqtt:
-            status=self.status()
+            status=public_status(self.status(), self.targets)
             self.mqtt.publish(TOPIC+'/state',json.dumps(status),retain=True)
         return True
 
@@ -462,12 +462,10 @@ class Bridge:
                      'device':device,'entity_category':'diagnostic'}
                 client.publish('homeassistant/button/projector_ble/'+cmd+'/config',json.dumps(cfg),retain=True)
         def message(client,userdata,msg):
-            if msg.retain:
+            command = parse_command(msg.payload, retained=msg.retain)
+            if command is None:
                 return
             try:
-                command=msg.payload.decode()
-                if command not in ('wake','power','sleep','home','back','enter','up','down','left','right'):
-                    return
                 def send():
                     try:
                         result=self.command({'action':'send','command':command})

@@ -14,7 +14,7 @@ class InstallTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory, patch.object(install.subprocess, 'run') as run:
             root = Path(directory)
             files = install.install_files(root)
-            self.assertEqual(len(files), 10)
+            self.assertEqual(len(files), 11)
             self.assertEqual((root / 'opt/projector-bridge/projector_bridge.py').read_bytes(),
                              (install.ROOT / 'runtime/projector_bridge.py').read_bytes())
             fetch_gatt.verify((root / 'opt/projector-bridge/core/ble_dbus.py').read_bytes())

@@ -42,7 +42,7 @@ addresses or internal Home Assistant storage.
 
 | Path | Purpose |
 | --- | --- |
-| `runtime/` | The three Python modules captured from the working host, byte for byte |
+| `runtime/` | Captured bridge modules plus MQTT input/redaction policy; public defaults use generic identifiers |
 | `deploy/` | Portable systemd unit, environment defaults, pinned MQTT Compose image |
 | `home-assistant/` | Generic working scripts/dashboard and Assist power-switch configuration |
 | `tools/install.py` | Plan, stage, and fresh-install paths; preserves existing installations |
@@ -67,13 +67,12 @@ PYTHONPATH=runtime:tools python3 -m unittest discover -s tests -v
 Optional real D-Bus object/report checks on Ubuntu (isolated session bus, no
 Bluetooth operations): `docs/validation.md`.
 
-`ci/github-actions.yml.example` is an optional GitHub Actions template. It is not
-an active workflow: the GitHub credential used for the initial upload has no
-`workflow` scope. With suitable repository credentials, copy it to
-`.github/workflows/check.yml` to enable CI. Local and isolated Ubuntu checks were
-performed separately; no GitHub CI result is claimed.
+`ci/github-actions.yml.example` is an optional, inactive GitHub Actions template.
+Copy it to `.github/workflows/check.yml` with suitable repository credentials to
+enable CI. Local/Ubuntu checks were performed separately; no GitHub CI result is
+claimed.
 
-Read [dependency provenance](THIRD_PARTY.md) and [validation limits](docs/validation.md).
+Read the [security review and trust model](SECURITY.md), [dependency provenance](THIRD_PARTY.md) and [validation limits](docs/validation.md).
 The rebuild instructions have been staged and checked; a fresh OS installation
 on another physical machine has not been performed.
 

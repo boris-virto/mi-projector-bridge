@@ -25,14 +25,14 @@ def main():
     for required in ('org.bluez.GattManager1', 'org.bluez.LEAdvertisingManager1'):
         if required not in interfaces:
             raise SystemExit('Missing BlueZ interface: ' + required)
-    subprocess.run(['docker', 'compose', 'version'], check=True)
+    subprocess.run(['/usr/bin/docker', 'compose', 'version'], check=True)
     if args.before_start:
         with socket.socket() as probe:
             try:
                 probe.bind(('127.0.0.1', 1883))
             except OSError:
                 raise SystemExit('127.0.0.1:1883 is occupied. Do not replace an existing MQTT broker')
-        existing = subprocess.check_output(['docker', 'ps', '-a', '--filter', 'name=^/projector-mqtt$', '--format', '{{.Names}}'], text=True).strip()
+        existing = subprocess.check_output(['/usr/bin/docker', 'ps', '-a', '--filter', 'name=^/projector-mqtt$', '--format', '{{.Names}}'], text=True).strip()
         if existing:
             raise SystemExit('Container projector-mqtt already exists; review it rather than taking it over')
     print('Preflight passed. This is not a hardware wake test; no Bluetooth setting changed.')

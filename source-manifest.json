@@ -1,9 +1,10 @@
 {
   "captured_on": "2026-10-28",
-  "description": "Read-only capture of the working Ubuntu projector bridge; hardware identities and secrets excluded.",
+  "description": "Derived from the working Ubuntu bridge. Public edition uses generic identifiers and MQTT redaction/input hardening; not redeployed to the original host.",
   "source_sha256": {
     "runtime/classic_remote.py": "17c3f41055e1f60c429209b8db584aa6b8fb7c250e9cda0e5312306281c1f9a8",
-    "runtime/projector_bridge.py": "65cd7beaa17963066b7dcd25024c920a25fa4f2a8084baaa220c4ba5b8b82103",
+    "runtime/mqtt_policy.py": "3192a76934d1537a24e4e084ff9a90bb5ec449c83cc1448c5835e10f5c794a0c",
+    "runtime/projector_bridge.py": "749e67838b9ec2eec5ff8344812c329345547a9086ca0931d0b6bad9ed729758",
     "runtime/projector_wake.py": "548641ecfaa6e362773e8ea03e01a64928faec7780e55cf5d6703fa3a68a9872"
   },
   "tested_environment": {
@@ -24,5 +25,11 @@
     "path": "core/ble_dbus.py",
     "sha256": "05b75c8bc2f8392e01d648d6e2c3a1b6e12e12412e576a9cba211630d50ce37d"
   },
-  "fresh_host_end_to_end_tested": false
+  "fresh_host_end_to_end_tested": false,
+  "captured_source_sha256": {
+    "runtime/classic_remote.py": "17c3f41055e1f60c429209b8db584aa6b8fb7c250e9cda0e5312306281c1f9a8",
+    "runtime/projector_bridge.py": "65cd7beaa17963066b7dcd25024c920a25fa4f2a8084baaa220c4ba5b8b82103",
+    "runtime/projector_wake.py": "548641ecfaa6e362773e8ea03e01a64928faec7780e55cf5d6703fa3a68a9872"
+  },
+  "public_hardening_on": "2026-10-29"
 }

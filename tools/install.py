@@ -61,14 +61,14 @@ def main():
     elif args.apply:
         if sys.platform != 'linux' or os.geteuid() != 0:
             parser.error('--apply requires root on Linux')
-        if subprocess.run(['systemctl', 'is-active', '--quiet', 'projector-ble.service']).returncode == 0:
+        if subprocess.run(['/usr/bin/systemctl', 'is-active', '--quiet', 'projector-ble.service']).returncode == 0:
             parser.error('A projector bridge is already running; nothing changed')
         # Verify Ubuntu's system modules before writing any installation files.
         subprocess.run(['/usr/bin/python3', '-c', 'import dbus; from gi.repository import GLib'], check=True)
         install_files(Path('/'))
         subprocess.run(['/usr/bin/python3', '-m', 'venv', '--system-site-packages', '/opt/projector-bridge/.venv'], check=True)
         subprocess.run(['/opt/projector-bridge/.venv/bin/python', '-m', 'pip', 'install', '-r', '/opt/projector-bridge/requirements.txt'], check=True)
-        subprocess.run(['systemctl', 'daemon-reload'], check=True)
+        subprocess.run(['/usr/bin/systemctl', 'daemon-reload'], check=True)
         print('Installed. No service started. Follow docs/install.md to activate and pair.')
     else:
         for name in payload():
